@@ -1,0 +1,66 @@
+1. app.use(express.urlencoded({ extended: true })); or false :- 
+
+false :-                                                             true :- 
+    1.parser :- uses the 'queryString' library                       1.parser :- uses the 'qs' library(a more 
+     to parse the URL-encoded data.                                   powerful query string parsing library)
+
+    2.Data handling :- This parser can only handle                   2.Data handling :- This parser can handle complex
+      simple data structures.It treats the URL-encoded data           objects and nested data structures.It supports 
+      as string or arrays.Nested objects are not supported.           deeply nested objects and arrays.
+
+    3.Usage :- use this option if you expect the incoming data       3.usage :- use this option if you expect the incoming
+      to be in the form of simple key-value pairs without any          data to include nested objects,arrays or other more
+      nested structures.                                               complex structures.
+
+      Ex :- name=john&age=30                                          Ex :- name=john&age=30 
+      result is :- '{name : "john",age : "30"}'                       result is :- '{name : "john",age : "30"}'
+
+      if data is too complex :-                                       if data is too complex :-
+      user[name]=john&user[age]=30                                    user[name]=john&user[age]=30
+      result is :- {"user[name]" : "john","user[age]" : "30"}         result is :- {user : {name : "john",age : "30"}}
+      
+
+==========================================================================================================================================================
+
+Authentication :- 
+
+iss project me hame Authentication using jwt kar sakte hai means sign karna but the main challenge is to
+verify the data uske liye hum Authorization ka use karenge.
+
+isme hame new project add kiya hai and isme hamne Authentication verify karke token to add kar liya hai.
+but the mein thing hame ye nahi pata tha ki kaise veriy karke data nikale.
+
+so pehele hame ek Authorization ki file jo middleware folder me hogi named as auth.js jisse hum jaha mujhe use karna hai like mujhe data nikalna and dalna etc 
+
+so now ab hum sirf data token se varify karenge.
+
+data verify karne ke liye auth.js me ye code add karenge :-
+
+Ex :- 
+async function authorization(req,res,next){
+
+    // taking tokens from header
+    const headers = req.headers['authorization']
+
+   // if header is undefined then token is not valid
+    if (headers === undefined) {
+         return res.json("Token is not valid !")
+    }
+     // if it is not undefined then bearer add kiya hai usse lena padega
+     else {
+      // use for create into array like [bearere,token-code] 
+        const bearer = headers.split(" ")
+        const token = bearer[1] // here we get first index means token code.
+
+        req.token = token // req.token token add kar dega.
+    }
+
+    next()
+}
+
+module.exports = {authorization}
+
+
+Note :- bearer jo name add kiya postman ke authorization header me uske token recognise karne ke liye name diya hai  
+hum dusre koi bhi name de sakte hai.
+
